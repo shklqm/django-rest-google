@@ -4,6 +4,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.state import token_backend
 
 from rest_auth.exceptions import AccountExistError
 from rest_auth.models import USER_MODEL, SocialAccount
@@ -86,3 +88,15 @@ def get_or_create_user(extra_data):
         social_account.save()
 
     return user
+
+
+def create_access_token_for_user(user):
+    """
+    Create an access token for user.
+
+    :param user:
+    :return Encoded token
+    """
+    refresh = TokenObtainPairSerializer.get_token(user)
+    encoded_token = token_backend.encode(refresh.access_token.payload)
+    return encoded_token

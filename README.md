@@ -31,16 +31,17 @@ we setup. The callback url contains `code` parameter.
     2. We check if `USER_MODEL` has a `SocialAccount`. If it does the `USER_MODEL`
      is returned otherwise `AccountExistError` is raised because of [this](https://github.com/pennersr/django-allauth/blob/master/allauth/socialaccount/adapter.py#L150).
 6. In case of error the related error templates are rendered, otherwise we
- redirect to `LOGIN_SUCCESS_URL` path.
+ create `jwt` token for the current user and set it to the `AUTH_COOKIE_NAME` 
+7. Redirect to `LOGIN_SUCCESS_URL` path.
 
-Until this point we have have the `user`, but not signed in yet. In the next
- steps the `jwt` will be used for authentication.
+### Authenticating requests
+The requests are authenticated with `RestAuthentication` class.
+It will authenticate the users either using authorization headers or cookies.
 
-
-### TODO
-- [x] Set up initial structure
-- [ ] Add `rest_framework` and `jwt` authentication
-- [ ] Add endpoints for fetching user info
+Example request:
+```bash
+curl -H "Authorization: Bearer <jwt_auth_token>" http://localhost:8000/your/protected/view
+```
 
 ### Setup & Run
 

@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+from datetime import timedelta
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -37,7 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'rest_auth',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -125,3 +128,17 @@ SITE_ID = 1
 LOGIN_SUCCESS_URL = '/'
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = 'your app key'
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'your app secret'
+AUTH_COOKIE_NAME = 'auth'
+AUTH_COOKIE_MAX_AGE = 604800
+
+# drf settings
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_auth.views.authentication.RestAuthentication',
+    ),
+}
+
+# simple jwt settings
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=7),
+}

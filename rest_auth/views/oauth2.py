@@ -4,7 +4,8 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from requests import RequestException
 
-from rest_auth.auth_utils import render_authentication_error, get_or_create_user
+from rest_auth.auth_utils import render_authentication_error, \
+    get_or_create_user, create_access_token_for_user
 from rest_auth.exceptions import ImmediateHttpResponse, AccountExistError
 from rest_auth.views.client import OAuth2Client, OAuth2Error
 from rest_auth.views.constants import AuthAction, AuthError
@@ -91,7 +92,7 @@ class OAuth2CallbackView(OAuth2View):
         provider
         4. To create user account and social account if they don't exist
         and/or retrieve the user instance.
-        5. TODO. add jwt cookie auth based on user
+        5. Adding jwt cookie auth based on user
         6. Redirect the page to success login url(defined in project settings).
         """
         if 'error' in request.GET or 'code' not in request.GET:
@@ -111,11 +112,18 @@ class OAuth2CallbackView(OAuth2View):
             token = self.adapter.get_token(access_token)
             extra_data = self.adapter.get_extra_data(token)
             user = get_or_create_user(extra_data)
+            encoded_token = create_access_token_for_user(user)
             login_success_url = getattr(settings, 'LOGIN_SUCCESS_URL', '/')
+            cookie_name = getattr(settings, 'AUTH_COOKIE_NAME', 'auth')
+            max_age = getattr(settings, 'AUTH_COOKIE_MAX_AGE', 604800)
             response = redirect(login_success_url)
-
-            # TODO add cookie auth
-            # response.set_cookie('auth', 'auth_string', max_age=1000)
+            response.set_cookie(
+                cookie_name,
+                encoded_token,
+                max_age=max_age,
+                httponly=True,
+                samesite='lax',
+            )
             return response
         except (PermissionDenied, OAuth2Error, RequestException,
                 AccountExistError) as exception:
