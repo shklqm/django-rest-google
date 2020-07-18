@@ -102,6 +102,7 @@ class GoogleOAuth2Adapter:
             'email': data.get('email'),
             'first_name': data.get('given_name'),
             'last_name': data.get('family_name'),
+            'profile_photo': data.get('picture'),
             'extra_data': data,
         }
 

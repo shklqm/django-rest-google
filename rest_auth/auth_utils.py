@@ -69,23 +69,20 @@ def get_or_create_user(extra_data):
             raise AccountExistError()
     except ObjectDoesNotExist:
         user = User(
+            email=email,
             first_name=extra_data.get('first_name'),
             last_name=extra_data.get('last_name'),
-            email=email,
-            username=uuid4().hex
+            profile_photo=extra_data.get('profile_photo')
         )
         user.set_unusable_password()
         user.save()
-        user.username = 'user{id}'.format(id=user.id)
 
-        social_account = SocialAccount(
+        SocialAccount.objects.create(
             user=user,
             provider=extra_data['provider'],
             uid=extra_data['uid'],
             extra_data=extra_data['extra_data']
         )
-        user.save()
-        social_account.save()
 
     return user
 
