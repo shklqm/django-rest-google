@@ -125,6 +125,7 @@ STATIC_URL = '/static/'
 SITE_ID = 1
 
 # django-rest-google settings
+AUTH_USER_MODEL = 'rest_auth.User'
 LOGIN_SUCCESS_URL = '/'
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = 'your app key'
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'your app secret'

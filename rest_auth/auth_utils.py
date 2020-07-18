@@ -8,7 +8,7 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.state import token_backend
 
 from rest_auth.exceptions import AccountExistError
-from rest_auth.models import USER_MODEL, SocialAccount
+from rest_auth.models import SocialAccount, User
 from rest_auth.views.constants import AuthError
 
 
@@ -43,32 +43,32 @@ def get_or_create_user(extra_data):
 
     Check if the user already exists with this email address.
       If not:
-        1. Create a USER_MODEL
+        1. Create a User
         2. Create a SocialAccount with that user
-        3. Return the USER_MODEL
+        3. Return the User
       otherwise:
-        Check if USER_MODEL has a SocialAccount
+        Check if User has a SocialAccount
           If not:
             raise AccountExistError
           otherwise:
-            Return the USER_MODEL
+            Return the User
 
     :param extra_data: Data received from provider
     :type extra_data: dict
 
-    :return An USER_MODEL instance.
-    :rtype USER_MODEL
+    :return An User instance.
+    :rtype User
    """
 
     email = extra_data['email']
     try:
-        user = USER_MODEL.objects.get(email=email)
+        user = User.objects.get(email=email)
         try:
             SocialAccount.objects.get(user=user)
         except ObjectDoesNotExist:
             raise AccountExistError()
     except ObjectDoesNotExist:
-        user = USER_MODEL(
+        user = User(
             first_name=extra_data.get('first_name'),
             last_name=extra_data.get('last_name'),
             email=email,
