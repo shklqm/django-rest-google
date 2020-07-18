@@ -26,9 +26,9 @@ we setup. The callback url contains `code` parameter.
  scope. 
 5. Retrieved data is parsed and an user is created/retrieved as below:
     1. First we check if the user already exists with this email address. If
-     not:  Create a `USER_MODEL`, `SocialAccount` with that user and return
-      the `USER_MODEL`,  otherwise:
-    2. We check if `USER_MODEL` has a `SocialAccount`. If it does the `USER_MODEL`
+     not:  Create a `User`, `SocialAccount` with that user and return
+      the `User`,  otherwise:
+    2. We check if `User` has a `SocialAccount`. If it does the `User`
      is returned otherwise `AccountExistError` is raised because of [this](https://github.com/pennersr/django-allauth/blob/master/allauth/socialaccount/adapter.py#L150).
 6. In case of error the related error templates are rendered, otherwise we
  create `jwt` token for the current user and set it to the `AUTH_COOKIE_NAME` 
