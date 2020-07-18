@@ -13,8 +13,18 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.urls import path, include
+from django.urls import path
+
+from rest_auth.views.google import google_oauth2_login, google_oauth2_callback
+from rest_auth.views.templates import login_cancelled, login_error
 
 urlpatterns = [
-    path('accounts/google/', include('rest_auth.urls')),
+
+    # google oauth2 urls
+    path('accounts/google/login/', google_oauth2_login, name="google_login"),
+    path('accounts/google/login/callback/', google_oauth2_callback,
+         name="google_callback"),
+    path('accounts/google/login/cancelled/', login_cancelled,
+         name='login_cancelled'),
+    path('accounts/google/login/error/', login_error, name='login_error'),
 ]
